@@ -51,10 +51,10 @@ class _TabNavigatorState extends State<TabNavigator> {
                 size: 32,
               )),
           BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text('首页'),
+              icon: Icon(Icons.apps),
+              title: Text('项目'),
               activeIcon: Icon(
-                Icons.vertical_align_top,
+                Icons.apps,
 //                size: 32,
               )),
         ],
