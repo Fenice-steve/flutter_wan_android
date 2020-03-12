@@ -5,6 +5,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:wanandroidflutter/config/net/api.dart';
 import 'package:wanandroidflutter/utils/platform_utils.dart';
 import 'view_state.dart';
+export 'view_state.dart';
 
 class ViewStateModel with ChangeNotifier{
 
