@@ -27,6 +27,18 @@ dependencies:
   # 状态管理
   provider: ^4.0.4
 
+  # 网络请求
+  dio: 3.0.9
+
+  # 设备信息
+  device_info: ^0.4.2+1
+
+  # app信息
+  package_info: ^0.4.0+6
+
+  # 提示
+  oktoast: ^2.3.1+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
