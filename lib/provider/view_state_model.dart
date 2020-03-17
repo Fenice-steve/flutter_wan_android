@@ -65,7 +65,7 @@ class ViewStateModel with ChangeNotifier{
 
     if(e is DioError){
       if(e.type == DioErrorType.CONNECT_TIMEOUT || e.type == DioErrorType.SEND_TIMEOUT || e.type == DioErrorType.RECEIVE_TIMEOUT){
-        // timeout
+        // timeoutl
         errorType = ViewStateErrorType.networkTimeOutError;
         message = e.error;
       }else if(e.type == DioErrorType.RESPONSE){
