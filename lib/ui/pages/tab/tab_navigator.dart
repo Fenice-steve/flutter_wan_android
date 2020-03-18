@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wanandroidflutter/ui/pages/tab/home_page.dart';
+import 'package:wanandroidflutter/ui/pages/tab/user_page.dart';
 
 /// 底部导航栏
 class TabNavigator extends StatefulWidget {
@@ -8,7 +10,7 @@ class TabNavigator extends StatefulWidget {
   _TabNavigatorState createState() => _TabNavigatorState();
 }
 
-List<Widget> pages = <Widget>[HomePage(),HomePage()];
+List<Widget> pages = <Widget>[HomePage(),UserPage()];
 
 class _TabNavigatorState extends State<TabNavigator> {
   var _pageController = PageController();
@@ -17,6 +19,10 @@ class _TabNavigatorState extends State<TabNavigator> {
 
   @override
   Widget build(BuildContext context) {
+
+    // 小米10全面屏尺寸
+    ScreenUtil.init(context, width: 1080, height: 2340, allowFontScaling: true);
+
     return Scaffold(
       body: WillPopScope(
         onWillPop: () async {
@@ -51,10 +57,10 @@ class _TabNavigatorState extends State<TabNavigator> {
                 size: 32,
               )),
           BottomNavigationBarItem(
-              icon: Icon(Icons.apps),
-              title: Text('项目'),
+              icon: Icon(Icons.person),
+              title: Text('我的'),
               activeIcon: Icon(
-                Icons.apps,
+                Icons.person,
 //                size: 32,
               )),
         ],
