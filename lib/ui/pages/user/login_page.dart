@@ -25,7 +25,9 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 Container(
                   child: ProviderWidget(
-                    builder: (context),
+                    builder: (context, child, caca){
+
+                    },
                     model: null,
                     child: Column(
                       children: <Widget>[
