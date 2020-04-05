@@ -42,7 +42,6 @@ class ApiInterceptor extends InterceptorsWrapper {
         throw NotSuccessException.fromRespData(responseData);
       }
     }
-    return super.onResponse(response);
   }
 }
 

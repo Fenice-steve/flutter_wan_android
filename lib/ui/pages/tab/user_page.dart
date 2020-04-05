@@ -1,7 +1,10 @@
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:wanandroidflutter/routers/application.dart';
+import 'package:wanandroidflutter/ui/pages/user/login_page.dart';
 import 'package:wanandroidflutter/view_model/user_model.dart';
 
 /// 我的页面
@@ -10,7 +13,11 @@ class UserPage extends StatefulWidget {
   _UserPageState createState() => _UserPageState();
 }
 
-class _UserPageState extends State<UserPage> {
+class _UserPageState extends State<UserPage> with AutomaticKeepAliveClientMixin{
+
+  bool get wantKeepAlive => true;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,34 +25,22 @@ class _UserPageState extends State<UserPage> {
         slivers: <Widget>[
           SliverAppBar(
             expandedHeight: MediaQuery.of(context).padding.top +
-                ScreenUtil().setHeight(700),
+                ScreenUtil().setHeight(500),
             actions: <Widget>[
               GestureDetector(child: Icon(Icons.equalizer), onTap: () {}),
               SizedBox(
                 width: ScreenUtil().setWidth(30),
               )
             ],
-            pinned: true,
+            pinned: false,
             flexibleSpace: UserHeaderWidget(),
+
           )
         ],
       ),
     );
   }
 }
-
-///// 我的页面头部
-//class UserHeaderWidget extends StatefulWidget {
-//  @override
-//  _UserHeaderWidgetState createState() => _UserHeaderWidgetState();
-//}
-//
-//class _UserHeaderWidgetState extends State<UserHeaderWidget> {
-//  @override
-//  Widget build(BuildContext context) {
-//    return Container();
-//  }
-//}
 
 /// 用户页面头部
 class UserHeaderWidget extends StatelessWidget {
@@ -54,7 +49,9 @@ class UserHeaderWidget extends StatelessWidget {
     return Consumer<UserModel>(
         builder: (context, model, child) => GestureDetector(
               onTap: model.hasUser ? null : (){
-
+                // 跳转登录路由
+//                Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()) );
+              Application.router.navigateTo(context, '/login',transition: TransitionType.cupertinoFullScreenDialog);
               },
               child: Container(
                 width: MediaQuery.of(context).size.width,
@@ -91,7 +88,7 @@ class UserHeaderWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           Text(
-                            '孙攀越',
+                            model.hasUser ? model.user.username : '请登录',
                             style: TextStyle(
                                 fontSize: ScreenUtil().setSp(56),
                                 color: Colors.white),
@@ -99,7 +96,7 @@ class UserHeaderWidget extends StatelessWidget {
                           SizedBox(
                             height: 5,
                           ),
-                          Text('Fenice Sun',
+                          Text(model.hasUser ? 'ID:${model.user.id}' : 'ID:请登录',
                               style: TextStyle(
                                   fontSize: ScreenUtil().setSp(50),
                                   color: Colors.white)),
