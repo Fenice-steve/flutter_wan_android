@@ -19,9 +19,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
+    // 创建一个Router对象
     final router = Router();
+    // 配置Routes注册管理
     Routes.configureRoutes(router);
+    // 将生成的router给全局化
     Application.router=router;
 
     return OKToast(

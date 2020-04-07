@@ -1,10 +1,9 @@
-import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:wanandroidflutter/routers/application.dart';
-import 'package:wanandroidflutter/ui/pages/user/login_page.dart';
+import 'package:wanandroidflutter/routers/fluro_navigator.dart';
+import 'package:wanandroidflutter/ui/pages/user/user_router.dart';
 import 'package:wanandroidflutter/view_model/user_model.dart';
 
 /// 我的页面
@@ -13,10 +12,9 @@ class UserPage extends StatefulWidget {
   _UserPageState createState() => _UserPageState();
 }
 
-class _UserPageState extends State<UserPage> with AutomaticKeepAliveClientMixin{
-
+class _UserPageState extends State<UserPage>
+    with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => true;
-
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +32,6 @@ class _UserPageState extends State<UserPage> with AutomaticKeepAliveClientMixin{
             ],
             pinned: false,
             flexibleSpace: UserHeaderWidget(),
-
           )
         ],
       ),
@@ -48,11 +45,11 @@ class UserHeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<UserModel>(
         builder: (context, model, child) => GestureDetector(
-              onTap: model.hasUser ? null : (){
-                // 跳转登录路由
-//                Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()) );
-              Application.router.navigateTo(context, '/login',transition: TransitionType.cupertinoFullScreenDialog);
-              },
+              onTap: model.hasUser
+                  ? null
+                  : () {
+                      NavigatorUtils.push(context, UserRouter.loginPage);
+                    },
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(top: 60),

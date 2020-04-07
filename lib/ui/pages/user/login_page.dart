@@ -1,4 +1,3 @@
-import 'package:fluro/fluro.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,9 +5,11 @@ import 'package:flutter_screenutil/screenutil.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:wanandroidflutter/provider/provider_widget.dart';
-import 'package:wanandroidflutter/routers/application.dart';
+import 'package:wanandroidflutter/routers/fluro_navigator.dart';
+import 'package:wanandroidflutter/ui/pages/user/user_router.dart';
 import 'package:wanandroidflutter/view_model/login_model.dart';
 import 'package:wanandroidflutter/widget/diy_textfield.dart';
+import 'package:wanandroidflutter/widget/login_widget.dart';
 
 /// 登录页面
 class LoginPage extends StatefulWidget {
@@ -22,48 +23,53 @@ class _LoginPageState extends State<LoginPage> {
   final _pwdFocus = FocusNode();
 
   @override
+  void dispose() {
+    _nameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              '登录',
-              style: TextStyle(
-                  color: Theme.of(context).cardColor,
-                  fontSize: ScreenUtil().setSp(54)),
-            ),
-            brightness: Theme.of(context).brightness,
-            centerTitle: true,
-            primary: true,
-            leading: IconButton(
-              icon: Icon(
-                Icons.close,
-                size: 25,
-                color: Theme.of(context).cardColor,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            actions: <Widget>[
-              Container(
-                margin: EdgeInsets.only(right: 12),
-                alignment: Alignment.centerLeft,
-                child: GestureDetector(
-                    onTap: () {
-//                      Navigator.of(context).pushNamed(RouteName.register);
-                    },
-                    child: Text(
-                      '注册',
-                      style: TextStyle(
-                        color: Theme.of(context).cardColor,
-                      ),
-                    )),
-              ),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          '登录',
+          style: TextStyle(
+              color: Theme.of(context).cardColor,
+              fontSize: ScreenUtil().setSp(54)),
+        ),
+        brightness: Theme.of(context).brightness,
+        centerTitle: true,
+        primary: true,
+        leading: IconButton(
+          icon: Icon(
+            Icons.close,
+            size: 25,
+            color: Theme.of(context).cardColor,
           ),
-
-
+          onPressed: () {
+            NavigatorUtils.goBack(context);
+          },
+        ),
+        actions: <Widget>[
+//          Container(
+//            margin: EdgeInsets.only(right: 12),
+//            alignment: Alignment.centerLeft,
+//            child: GestureDetector(
+//                onTap: () {
+////                      Navigator.of(context).pushNamed(RouteName.register);
+//                  NavigatorUtils.push(context, UserRouter.registerPage);
+//                },
+//                child: Text(
+//                  '注册',
+//                  style: TextStyle(
+//                    color: Theme.of(context).cardColor,
+//                  ),
+//                )),
+//          ),
+        ],
+      ),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverToBoxAdapter(
@@ -120,12 +126,13 @@ class _LoginPageState extends State<LoginPage> {
                                     width: 60,
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                                    child:
-                                    Text(
-                                '第三方登录',
-                                style: TextStyle(fontSize: ScreenUtil().setSp(36)),
-                              ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: Text(
+                                      '第三方登录',
+                                      style: TextStyle(
+                                          fontSize: ScreenUtil().setSp(36)),
+                                    ),
                                   ),
                                   Container(
                                     color: Colors.black26,
@@ -141,26 +148,31 @@ class _LoginPageState extends State<LoginPage> {
                               Container(
                                   margin: EdgeInsets.only(top: 30),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
                                     children: <Widget>[
-
-                                      GestureDetector(onTap: (){
-                                        showToast('即将到来', position: ToastPosition.bottom);
-
-                                      },child: Image.asset(
-                                        'assets/images/icon_wechat.png',
+                                      GestureDetector(
+                                        onTap: () {
+                                          showToast('即将到来',
+                                              position: ToastPosition.bottom);
+                                        },
+                                        child: Image.asset(
+                                          'assets/images/icon_wechat.png',
 //                                        color: Theme.of(context).cardColor,
-                                        width: 30,
-                                      ),),
-                                      GestureDetector(onTap: (){
-                                        showToast('即将到来',position: ToastPosition.bottom);
-
-                                      },child:Image.asset(
-                                        'assets/images/alipay.png',
+                                          width: 30,
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          showToast('即将到来',
+                                              position: ToastPosition.bottom);
+                                        },
+                                        child: Image.asset(
+                                          'assets/images/alipay.png',
 //                                        color: Theme.of(context).cardColor,
-                                        width: 30,
-                                      ),)
-
+                                          width: 30,
+                                        ),
+                                      )
                                     ],
                                   )),
                             ],
@@ -175,7 +187,7 @@ class _LoginPageState extends State<LoginPage> {
           )
         ],
       ),
-    ));
+    );
   }
 }
 
@@ -218,77 +230,6 @@ class LoginButton extends StatelessWidget {
   }
 }
 
-class ButtonProgressIndicator extends StatelessWidget {
-  final double size;
-  final Color color;
-
-  ButtonProgressIndicator({this.size: 24, this.color: Colors.black});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-        width: size,
-        height: size,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation(color),
-        ));
-  }
-}
-
-/// LoginPage 按钮样式封装
-class LoginButtonWidget extends StatelessWidget {
-  final Widget child;
-  final VoidCallback onPressed;
-
-  LoginButtonWidget({this.child, this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return  Container(
-      decoration:
-      BoxDecoration(borderRadius: BorderRadius.circular(3), boxShadow: [
-        BoxShadow(
-            color: Theme.of(context).primaryColor,
-            blurRadius: 12.5,
-            offset: Offset(0, 1))
-      ]),
-      margin: EdgeInsets.only(top: 40),
-      width: ScreenUtil().setWidth(1000),
-      height: ScreenUtil().setHeight(150),
-      child: FlatButton(
-          color: Theme.of(context).primaryColor,
-          onPressed: onPressed,
-          child: child),
-    );
-  }
-}
-
-///// LoginPage 按钮样式封装
-//class LoginButtonWidget extends StatelessWidget {
-//  final Widget child;
-//  final VoidCallback onPressed;
-//
-//  LoginButtonWidget({this.child, this.onPressed});
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    var color = Theme.of(context).primaryColor.withAlpha(180);
-//    return Padding(
-//        padding: const EdgeInsets.fromLTRB(15, 40, 15, 20),
-//        child: CupertinoButton(
-//          padding: EdgeInsets.all(0),
-//          color: color,
-//          disabledColor: color,
-//          borderRadius: BorderRadius.circular(110),
-//          pressedOpacity: 0.5,
-//          child: child,
-//          onPressed: onPressed,
-//        ));
-//  }
-//}
-
-
 class SingUpWidget extends StatefulWidget {
   final nameController;
 
@@ -307,8 +248,7 @@ class _SingUpWidgetState extends State<SingUpWidget> {
       ..onTap = () async {
         // 将注册成功的用户名,回填如登录框
         widget.nameController.text =
-        await               Application.router.navigateTo(context, '/register',transition: TransitionType.cupertinoFullScreenDialog);
-        ;
+            await NavigatorUtils.push(context, UserRouter.registerPage);
       };
     super.initState();
   }
