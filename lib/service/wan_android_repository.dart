@@ -27,4 +27,11 @@ class WanAndroidRepository{
     await http.get('user/logout/json');
   }
 
+
+  /// 积分排行榜
+  static Future fetchRankingList(int pageNum) async {
+    var response = await http.get('coin/rank/$pageNum/json');
+    return response.data['datas'];
+  }
+
 }
