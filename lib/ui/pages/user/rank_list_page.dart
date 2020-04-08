@@ -8,6 +8,29 @@ import 'package:wanandroidflutter/routers/fluro_navigator.dart';
 import 'package:wanandroidflutter/view_model/coin_model.dart';
 import 'package:wanandroidflutter/view_model/user_model.dart';
 
+// 判断索引大小
+isIndexSize(index) {
+  if (index < 4) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+// 选择1，2，3名图片
+selectRankImage(rankIndex){
+  switch(rankIndex){
+    case 1:
+      return 'assets/images/rat.png';
+    case 2:
+      return 'assets/images/ox.png';
+    case 3:
+      return 'assets/images/tiger.png';
+    default:
+      return ' ';
+  }
+}
+
 /// 积分排行榜
 class CoinRankListPage extends StatelessWidget {
   @override
@@ -67,12 +90,20 @@ class CoinRankListPage extends StatelessWidget {
                 String coinCount = item['coinCount'].toString();
                 return ListTile(
                   dense: true,
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                  contentPadding: isIndexSize(index + 1)
+                      ? EdgeInsets.symmetric(horizontal: 25, vertical: 10)
+                      : EdgeInsets.only(
+                          left: 8, right: 25, top: 10, bottom: 10),
                   onTap: () {
                     /// 跳转显示每个用户的详情
                   },
-                  leading: Text('${index + 1}'),
+                  leading: isIndexSize(index + 1)
+                      ? Text('${index + 1}')
+                      :
+                  Container(
+                          child: Image.asset(selectRankImage(index + 1)),
+                          margin: EdgeInsets.only(right: 10),
+                        ),
                   title: Text(
                     userName,
                     style: TextStyle(
