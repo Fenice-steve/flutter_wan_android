@@ -42,7 +42,7 @@ class CoinRankListPage extends StatelessWidget {
         builder: (context, model, child) {
           if (model.isBusy) {
             return Container();
-          } else if (model.isError && model.isEmpty) {
+          } else if (model.isError && model.list.isEmpty) {
             return Container();
           } else if (model.isEmpty) {
             return Container();
