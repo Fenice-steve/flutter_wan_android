@@ -72,7 +72,7 @@ class CoinRankListPage extends StatelessWidget {
           }
           return SmartRefresher(
             controller: model.refreshController,
-            header: WaterDropHeader(),
+            header: BezierHeader(),
             footer: ClassicFooter(),
             onRefresh: model.refresh,
             onLoading: model.loadMore,
