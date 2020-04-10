@@ -76,6 +76,7 @@ class CoinRankListPage extends StatelessWidget {
             footer: ClassicFooter(),
             onRefresh: model.refresh,
             onLoading: model.loadMore,
+            //
             enablePullUp: true,
             child: ListView.separated(
               itemCount: model.list.length,
