@@ -35,8 +35,6 @@ selectRankImage(rankIndex) {
 class CoinRankListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    UserModel userModel = Provider.of<UserModel>(context);
-    String selfName = userModel.user.username.replaceRange(1, 3, '**');
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -110,7 +108,7 @@ class CoinRankListPage extends StatelessWidget {
                               userName,
                               style: TextStyle(
                                   fontSize: 16,
-                                  color: selfName == userName
+                                  color: model.user.username.replaceRange(1, 3, '**') == userName
                                       ? Colors.amberAccent
                                       : null),
                             )
