@@ -25,11 +25,12 @@ class _UserPageState extends State<UserPage>
             expandedHeight: MediaQuery.of(context).padding.top +
                 ScreenUtil().setHeight(500),
             actions: <Widget>[
-              GestureDetector(child: Icon(Icons.equalizer), onTap: () {
-
-                NavigatorUtils.push(context, UserRouter.rankListPage);
-
-              }),
+              Consumer<UserModel>(
+                  builder: (context, model, child) => GestureDetector(
+                      child: Icon(Icons.equalizer),
+                      onTap: model.hasUser ?  () {
+                        NavigatorUtils.push(context, UserRouter.rankListPage);
+                      }: null)),
               SizedBox(
                 width: ScreenUtil().setWidth(30),
               )
@@ -121,4 +122,3 @@ class UserHeaderWidget extends StatelessWidget {
             ));
   }
 }
-
