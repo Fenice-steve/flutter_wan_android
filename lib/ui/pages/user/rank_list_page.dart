@@ -18,8 +18,8 @@ isIndexSize(index) {
 }
 
 // 选择1，2，3名图片
-selectRankImage(rankIndex){
-  switch(rankIndex){
+selectRankImage(rankIndex) {
+  switch (rankIndex) {
     case 1:
       return 'assets/images/rat.png';
     case 2:
@@ -100,18 +100,27 @@ class CoinRankListPage extends StatelessWidget {
                   },
                   leading: isIndexSize(index + 1)
                       ? Text('${index + 1}')
-                      :
-                  Container(
+                      : Container(
                           child: Image.asset(selectRankImage(index + 1)),
                           margin: EdgeInsets.only(right: 10),
                         ),
-                  title: Text(
-                    userName,
-                    style: TextStyle(
-                        fontSize: 16,
-                        color:
-                            selfName == userName ? Colors.amberAccent : null),
-                  ),
+                  title: Consumer<UserModel>(
+                      builder: (context, model, child) => model.hasUser
+                          ? Text(
+                              userName,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: selfName == userName
+                                      ? Colors.amberAccent
+                                      : null),
+                            )
+                          : Text(
+                              userName,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: null
+                                  ),
+                            )),
                   trailing: Text(
                     coinCount,
                     style: TextStyle(color: Theme.of(context).accentColor),
