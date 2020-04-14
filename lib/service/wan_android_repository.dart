@@ -1,5 +1,7 @@
 import 'package:wanandroidflutter/config/net/wan_android_api.dart';
+import 'package:wanandroidflutter/model/article.dart';
 import 'package:wanandroidflutter/model/user.dart';
+import 'package:wanandroidflutter/model/banner.dart';
 
 class WanAndroidRepository{
 
@@ -33,5 +35,28 @@ class WanAndroidRepository{
     var response = await http.get('coin/rank/$pageNum/json');
     return response.data['datas'];
   }
+  
+  /// 首页banner
+  static Future fetchBanner() async{
+    var response = await http.get('banner/json');
+//    return Banner.fromJsonMap(response.data);
+  return response.data.map<Banner>((item)=>Banner.fromJsonMap(item)).toList();
+  }
 
+  /// 置顶文章
+  static Future fetchTopArticles() async{
+    var response = await http.get('article/top/json');
+//    return Article.fromJsonMap(response.data);
+    response.data.map<Article>((item) => Article.fromJsonMap(item)).toList();
+  }
+  
+  /// 文章
+  static Future fetchArticles(int pageNum, {int cid})async{
+    await Future.delayed(Duration(seconds: 1));// 增加动效
+    var response = await http.get('article/list/$pageNum/json', queryParameters: (cid != null ? {'cid':cid}:null));
+//    return Article.fromJsonMap(response.data);
+    return response.data['datas']
+        .map<Article>((item) => Article.fromJsonMap(item))
+        .toList();
+  }
 }

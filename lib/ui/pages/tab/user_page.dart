@@ -25,12 +25,11 @@ class _UserPageState extends State<UserPage>
             expandedHeight: MediaQuery.of(context).padding.top +
                 ScreenUtil().setHeight(500),
             actions: <Widget>[
-              Consumer<UserModel>(
-                  builder: (context, model, child) => GestureDetector(
+              GestureDetector(
                       child: Icon(Icons.equalizer),
-                      onTap: model.hasUser ?  () {
+                      onTap: () {
                         NavigatorUtils.push(context, UserRouter.rankListPage);
-                      }: null)),
+                      }),
               SizedBox(
                 width: ScreenUtil().setWidth(30),
               )
