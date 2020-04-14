@@ -112,7 +112,8 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin{
                                 Container()
                               ],
                             ),
-                          )));
+                          )
+                      ));
                 })
 
 //                RefreshIndicator(
@@ -177,46 +178,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin{
     );
   }
 
-  /// 加载首页数据
-  Future<Null> _handleRefresh() async {
-    return null;
-  }
 
-  /// ListView列表
-  Widget get _listView {
-    return ListView(
-      children: <Widget>[Banner(), Container()],
-    );
-  }
-
-  /// banner轮播图
-  Widget get _banner {
-    return Container(height: 160, child: Text('测试')
-
-//      Swiper(
-//        itemCount: bannerList.length,
-//        autoplay: true,
-//        // Swiper指示器
-//        pagination: SwiperPagination(),
-//        itemBuilder: (BuildContext context, int index) {
-//          return Image.network(
-//            bannerList[index].icon,
-//            fit: BoxFit.fill,
-//          );
-//        },
-//        onTap: (index) {
-//          Navigator.push(
-//              context,
-//              MaterialPageRoute(
-//                  builder: (context) => WebView(
-//                    url: bannerList[index].url,
-//                    hideAppBar: bannerList[index].hideAppBar,
-//                    title: bannerList[index].title,
-//                  )));
-//        },
-//      ),
-        );
-  }
 }
 
 /// 首页Banner
