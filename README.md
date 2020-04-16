@@ -15,3 +15,6 @@ For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 # flutter_wan_android
+
+## 用到的自己不熟悉的插件
+quiver 2.1.3
