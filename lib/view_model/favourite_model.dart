@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:wanandroidflutter/model/article.dart';
+import 'package:wanandroidflutter/provider/view_state_model.dart';
 
 /// 是否收藏
 class GlobalFavouriteStateModel extends ChangeNotifier{
@@ -47,3 +48,55 @@ class GlobalFavouriteStateModel extends ChangeNotifier{
     return _map[id];
   }
 }
+
+///// 我的收藏列表
+//class FavouriteListModel extends ViewStateRefreshListModel<Article> {
+//  LoginModel loginModel;
+//
+//  FavouriteListModel({this.loginModel});
+//
+//  @override
+//  void onError(ViewStateError viewStateError) {
+//    super.onError(viewStateError);
+//    if (viewStateError.isUnauthorized) {
+//      loginModel.logout();
+//    }
+//  }
+//
+//
+//  @override
+//  Future<List<Article>> loadData({int pageNum}) async {
+//    return await WanAndroidRepository.fetchCollectList(pageNum);
+//  }
+//}
+
+///// 收藏/取消收藏
+//class FavouriteModel extends ViewStateModel {
+//  GlobalFavouriteStateModel globalFavouriteModel;
+//
+//  FavouriteModel({@required this.globalFavouriteModel});
+//
+//  collect(Article article) async {
+//    setBusy();
+//    try {
+//      // article.collect 字段为null,代表是从我的收藏页面进入的 需要调用特殊的取消接口
+//      if (article.collect == null) {
+//        await WanAndroidRepository.unMyCollect(
+//            id: article.id, originId: article.originId);
+//        globalFavouriteModel.removeFavourite(article.originId);
+//      } else {
+//        if (article.collect) {
+//          await WanAndroidRepository.unCollect(article.id);
+//          globalFavouriteModel.removeFavourite(article.id);
+//        } else {
+//          await WanAndroidRepository.collect(article.id);
+//          globalFavouriteModel.addFavourite(article.id);
+//        }
+//      }
+//      article.collect = !(article.collect ?? true);
+//      setIdle();
+//    } catch (e, s) {
+//      setError(e, s);
+//    }
+//  }
+//}

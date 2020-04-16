@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wanandroidflutter/config/provider_manager.dart';
 import 'package:wanandroidflutter/config/storage_manager.dart';
 import 'package:wanandroidflutter/routers/routes.dart';
@@ -30,16 +31,18 @@ class MyApp extends StatelessWidget {
     // 配置Routes注册管理
     Routes.configureRoutes(router);
     // 将生成的router给全局化
-    Application.router=router;
+    Application.router = router;
 
     return OKToast(
         child: MultiProvider(
       providers: providers,
-      child: MaterialApp(
+      child: RefreshConfiguration(
+        hideFooterWhenNotFull: true,
+          child: MaterialApp(
         debugShowCheckedModeBanner: false,
         onGenerateRoute: Application.router.generator,
         home: TabNavigator(),
-      ),
+      )),
     ));
   }
 }

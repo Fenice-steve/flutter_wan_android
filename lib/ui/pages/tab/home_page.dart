@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_screenutil/screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wanandroidflutter/provider/provider_widget.dart';
 import 'package:wanandroidflutter/view_model/home_model.dart';
 import 'package:wanandroidflutter/view_model/scroll_controller_model.dart';
+import 'package:wanandroidflutter/widget/banner_image.dart';
 import 'package:wanandroidflutter/widget/search_bar.dart';
 
 // 滚动最大距离
@@ -53,7 +55,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin{
     return ProviderWidget2<HomeModel, TapToTopModel>(
       model1: HomeModel(),
       model2: TapToTopModel(PrimaryScrollController.of(context),
-          height: bannerHeight - kHomeRefreshHeight),
+          height: bannerHeight - kToolbarHeight),
       onModelReady: (homeModel, tapToTopModel) {
         homeModel.initData();
         tapToTopModel.init();
@@ -61,41 +63,43 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin{
       builder: (context, homeModel, tapToTopModel, child) {
         return Scaffold(
             body:
-//            Stack(
-//          children: <Widget>[
-            // 移除顶部的Padding边距
-            MediaQuery.removePadding(
-                removeTop: true,
-                context: context,
-                child: Builder(builder: (_) {
-                  if (homeModel.isError && homeModel.list.isEmpty) {
-                    return Container(
-                      child: Text('无数据'),
-                    );
-                  }
 
-                  return RefreshConfiguration.copyAncestor(
-                      context:context,
-                      // 下拉触发二楼距离
-                      twiceTriggerDistance: kHomeRefreshHeight - 15,
-                      //最大下拉距离,android默认为0,这里为了触发二楼
-                      maxOverScrollExtent: kHomeRefreshHeight,
-                      headerTriggerDistance:
-                      80 + MediaQuery.of(context).padding.top / 3,
+            Stack(children: <Widget>[
 
-                      child: NotificationListener(
-                          onNotification: (scrollNotification) {
-                            // 判断是否是监听更新的对象
-                            if (scrollNotification
-                                    is ScrollUpdateNotification &&
-                                // 从外层Widget开始向下遍历查找
-                                scrollNotification.depth == 0) {
-                              // 滚动且是列表滚动的时候
-                              _onScroll(scrollNotification.metrics.pixels);
-                            }
-                            return false;
-                          },
-                          child: SmartRefresher(
+              // 移除顶部的Padding边距
+              MediaQuery.removePadding(
+                  context: context,
+                  removeTop: false,
+                  child: Builder(builder: (_) {
+                    if (homeModel.isError && homeModel.list.isEmpty) {
+                      return Container(
+                        child: Text('无数据'),
+                      );
+                    }
+                    return RefreshConfiguration.copyAncestor(
+                        context:context,
+//                        // 下拉触发二楼距离
+//                        twiceTriggerDistance: kHomeRefreshHeight - 15,
+//                        //最大下拉距离,android默认为0,这里为了触发二楼
+//                        maxOverScrollExtent: kHomeRefreshHeight,
+//                        headerTriggerDistance:
+//                        80 + MediaQuery.of(context).padding.top / 3,
+
+                        child:
+                        NotificationListener(
+                            onNotification: (scrollNotification) {
+                              // 判断是否是监听更新的对象
+                              if (scrollNotification
+                              is ScrollUpdateNotification &&
+                                  // 从外层Widget开始向下遍历查找
+                                  scrollNotification.depth == 0) {
+                                // 滚动且是列表滚动的时候
+                                _onScroll(scrollNotification.metrics.pixels);
+                              }
+                              return false;
+                            },
+                            child:
+                            SmartRefresher(
                               controller: homeModel.refreshController,
                               header: WaterDropHeader(),
                               footer: ClassicFooter(),
@@ -104,44 +108,51 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin{
                                 await homeModel.refresh();
                                 homeModel.showErrorMessage(context);
                               },
-                          onLoading: homeModel.loadMore,
-                          enablePullUp: homeModel.list.isNotEmpty,
-                            child: ListView(
-                              children: <Widget>[
-                                Banner(),
-                                Container()
-                              ],
-                            ),
-                          )
-                      ));
-                })
+                              onLoading: homeModel.loadMore,
+                              enablePullUp: homeModel.list.isNotEmpty,
+                              child: CustomScrollView(
+                                controller: tapToTopModel.scrollController,
+                                slivers: <Widget>[
+                                  SliverToBoxAdapter(),
+                                  SliverAppBar(
+                                    expandedHeight: bannerHeight,
+                                    flexibleSpace: Banner(),
+                                    pinned: true,
+                                  ),
 
-//                RefreshIndicator(
-//                    child: NotificationListener(
-//                        onNotification: (scrollNotification) {
-//                          // 判断是否是监听更新的对象
-//                          if (scrollNotification is ScrollUpdateNotification &&
-//                              // 从最外层Widget开始向下遍历查找
-//                              scrollNotification.depth == 0) {
-//                            // 滚动且是列表滚动的时候
-//                            _onScroll(scrollNotification.metrics.pixels);
-//                          }
-//                          return false;
-//                        },
-//                        child: _listView),
-//                    onRefresh: _handleRefresh)
+                                  // 如果不是Sliver家族的Widget，需要用SliverToBoxAdapter做包裹
+                                  if (homeModel.isEmpty)
+                                     SliverToBoxAdapter(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(top: 50),
+                                          child: Container(),
+                                        )),
 
-//                ),
+//                                    HomeTopArticleList(),
 
-//          ],
-        ));
+                                ],
+                              )
+
+                            
+                            )
+                        )
+                    );
+                  })
+
+              ),
+              _appBar
+            ],),
+
+
+        );
       },
     );
   }
 
   /// 自定义appBar
   Widget get _appBar {
-    return // 透明Widget，opacity是必要参数
+    return
+        // 透明Widget，opacity是必要参数
         Column(
       children: <Widget>[
         Container(
@@ -186,6 +197,8 @@ class Banner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+//      width: MediaQuery.of(context).size.width,
+//      height: ScreenUtil().setHeight(785),
       decoration:
           BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
       child: Consumer<HomeModel>(builder: (context, model, child) {
@@ -202,7 +215,7 @@ class Banner extends StatelessWidget {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {},
-                child: Image.network(banners[index].imagePath),
+                child: BannerImage(banners[index].imagePath),
               );
             },
           );
