@@ -18,7 +18,7 @@ class ArticleItemWidget extends StatelessWidget {
   final bool hideFavourite;
 
   ArticleItemWidget(this.article,
-      {this.index, this.onTap, this.top, this.hideFavourite: false});
+      {this.index, this.onTap, this.top: false, this.hideFavourite: false});
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +101,7 @@ class ArticleItemWidget extends StatelessWidget {
                         padding: EdgeInsets.symmetric(vertical: 5),
                         child: Text(
                           (article.superChapterName != null
-                                  ? article.superChapterName + ' . '
+                                  ? article.superChapterName + ' · '
                                   : '') +
                               (article.chapterName ?? ''),
                           style: Theme.of(context).textTheme.overline,

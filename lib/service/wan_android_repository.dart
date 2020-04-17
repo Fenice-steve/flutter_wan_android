@@ -47,7 +47,7 @@ class WanAndroidRepository{
   static Future fetchTopArticles() async{
     var response = await http.get('article/top/json');
 //    return Article.fromJsonMap(response.data);
-    response.data.map<Article>((item) => Article.fromJsonMap(item)).toList();
+    return response.data.map<Article>((item) => Article.fromJsonMap(item)).toList();
   }
   
   /// 文章

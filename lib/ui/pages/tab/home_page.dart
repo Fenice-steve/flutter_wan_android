@@ -8,6 +8,7 @@ import 'package:wanandroidflutter/model/article.dart';
 import 'package:wanandroidflutter/provider/provider_widget.dart';
 import 'package:wanandroidflutter/view_model/home_model.dart';
 import 'package:wanandroidflutter/view_model/scroll_controller_model.dart';
+import 'package:wanandroidflutter/widget/animated_provider.dart';
 import 'package:wanandroidflutter/widget/article_list_item.dart';
 import 'package:wanandroidflutter/widget/banner_image.dart';
 import 'package:wanandroidflutter/widget/search_bar.dart';
@@ -19,7 +20,7 @@ const double kHomeRefreshHeight = 180.0;
 
 double appBarAlpha = 0;
 String resultString = "";
-const SEARCH_BAR_DEFAULT_TEXT = '网红打卡地 景点 酒店 美食';
+const SEARCH_BAR_DEFAULT_TEXT = '';
 
 /// 玩安卓首页
 class HomePage extends StatefulWidget {
@@ -56,6 +57,7 @@ class _HomePageState extends State<HomePage>
 
     return ProviderWidget2<HomeModel, TapToTopModel>(
       model1: HomeModel(),
+      // 使用PrimaryScrollController保留iOS点击状态栏回到顶部的功能
       model2: TapToTopModel(PrimaryScrollController.of(context),
           height: bannerHeight - kToolbarHeight),
       onModelReady: (homeModel, tapToTopModel) {
@@ -78,61 +80,87 @@ class _HomePageState extends State<HomePage>
                     }
                     return RefreshConfiguration.copyAncestor(
                         context: context,
-//                        // 下拉触发二楼距离
-//                        twiceTriggerDistance: kHomeRefreshHeight - 15,
-//                        //最大下拉距离,android默认为0,这里为了触发二楼
-//                        maxOverScrollExtent: kHomeRefreshHeight,
-//                        headerTriggerDistance:
-//                        80 + MediaQuery.of(context).padding.top / 3,
-
+                        // 下拉触发二楼距离
+                        twiceTriggerDistance: kHomeRefreshHeight - 15,
+                        //最大下拉距离,android默认为0,这里为了触发二楼
+                        maxOverScrollExtent: kHomeRefreshHeight,
+                        headerTriggerDistance:
+                            80 + MediaQuery.of(context).padding.top / 3,
                         child: NotificationListener(
-                            onNotification: (scrollNotification) {
-                              // 判断是否是监听更新的对象
-                              if (scrollNotification
-                                      is ScrollUpdateNotification &&
-                                  // 从外层Widget开始向下遍历查找
-                                  scrollNotification.depth == 0) {
-                                // 滚动且是列表滚动的时候
-                                _onScroll(scrollNotification.metrics.pixels);
-                              }
-                              return false;
+                          onNotification: (scrollNotification) {
+                            // 判断是否是监听更新的对象
+                            if (scrollNotification
+                                    is ScrollUpdateNotification &&
+                                // 从外层Widget开始向下遍历查找
+                                scrollNotification.depth == 0) {
+                              // 滚动且是列表滚动的时候
+                              _onScroll(scrollNotification.metrics.pixels);
+                            }
+                            return false;
+                          },
+                          child: SmartRefresher(
+                            controller: homeModel.refreshController,
+                            header: WaterDropHeader(),
+                            footer: ClassicFooter(),
+                            enablePullDown: homeModel.list.isNotEmpty,
+                            onRefresh: () async {
+                              await homeModel.refresh();
+                              homeModel.showErrorMessage(context);
                             },
-                            child: SmartRefresher(
-                                controller: homeModel.refreshController,
-                                header: WaterDropHeader(),
-                                footer: ClassicFooter(),
-                                enablePullDown: homeModel.list.isNotEmpty,
-                                onRefresh: () async {
-                                  await homeModel.refresh();
-                                  homeModel.showErrorMessage(context);
-                                },
-                                onLoading: homeModel.loadMore,
-                                enablePullUp: homeModel.list.isNotEmpty,
-                                child: CustomScrollView(
-                                  controller: tapToTopModel.scrollController,
-                                  slivers: <Widget>[
-                                    SliverToBoxAdapter(),
-                                    SliverAppBar(
-                                      expandedHeight: bannerHeight,
-                                      flexibleSpace: Banner(),
-                                      pinned: true,
-                                    ),
+                            onLoading: homeModel.loadMore,
+                            enablePullUp: homeModel.list.isNotEmpty,
+                            child: CustomScrollView(
+                              controller: tapToTopModel.scrollController,
+                              slivers: <Widget>[
+                                SliverToBoxAdapter(),
+                                SliverAppBar(
+                                  expandedHeight: bannerHeight,
+                                  flexibleSpace: Banner(),
+                                  pinned: true,
+                                ),
 
-                                    // 如果不是Sliver家族的Widget，需要用SliverToBoxAdapter做包裹
-                                    if (homeModel.isEmpty)
-                                      SliverToBoxAdapter(
-                                          child: Padding(
-                                        padding: const EdgeInsets.only(top: 50),
-                                        child: Container(),
-                                      )),
-
-                                    HomeTopArticleList(),
-                                  ],
-                                ))));
+                                // 如果不是Sliver家族的Widget，需要用SliverToBoxAdapter做包裹
+                                if (homeModel.isEmpty)
+                                  SliverToBoxAdapter(
+                                      child: Padding(
+                                    padding: const EdgeInsets.only(top: 50),
+                                    child: Container(),
+                                  )),
+                                if (homeModel.topArticles?.isNotEmpty ?? false)
+                                  HomeTopArticleList(),
+                                HomeArticleList()
+                              ],
+                            ),
+                          ),
+                        ));
                   })),
+
               _appBar
             ],
           ),
+          floatingActionButton: ScaleAnimatedSwitcher(
+              child: tapToTopModel.showTopButton &&
+                      homeModel.refreshController.headerStatus !=
+                          RefreshStatus.twoLevelOpening
+                  ? FloatingActionButton(
+                      heroTag: 'homeEmpty',
+                      key: ValueKey(Icons.vertical_align_top),
+                      onPressed: () {
+                        tapToTopModel.scrollToTop();
+                      },
+                      child: Icon(Icons.vertical_align_top),
+                    )
+                  : FloatingActionButton(
+                      heroTag: 'homeFab',
+                      key: ValueKey(Icons.search),
+                      onPressed: () {
+//                showSearch(
+//                    context: context, delegate: DefaultSearchDelegate());
+                      },
+                      child: Icon(
+                        Icons.search,
+                      ),
+                    )),
         );
       },
     );
@@ -212,6 +240,7 @@ class Banner extends StatelessWidget {
   }
 }
 
+/// 置顶文章
 class HomeTopArticleList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -228,5 +257,26 @@ class HomeTopArticleList extends StatelessWidget {
       },
       childCount: homeModel.topArticles?.length ?? 0,
     ));
+  }
+}
+
+/// 首页文章
+class HomeArticleList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    HomeModel homeModel = Provider.of(context);
+    if (homeModel.isBusy) {
+      return SliverToBoxAdapter(
+        child: Container(),
+      );
+    }
+    return SliverList(
+        delegate: SliverChildBuilderDelegate((context, index) {
+      Article item = homeModel.list[index];
+      return ArticleItemWidget(
+        item,
+        index: index,
+      );
+    }, childCount: homeModel.list?.length ?? 0));
   }
 }
