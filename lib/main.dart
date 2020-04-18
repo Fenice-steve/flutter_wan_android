@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -36,9 +36,11 @@ class MyApp extends StatelessWidget {
     return OKToast(
         child: MultiProvider(
       providers: providers,
-      child: RefreshConfiguration(
+      child:
+      RefreshConfiguration(
         hideFooterWhenNotFull: true,
-        child: MaterialApp(
+        child:
+        MaterialApp(
           debugShowCheckedModeBanner: false,
           onGenerateRoute: Application.router.generator,
           home: TabNavigator(),

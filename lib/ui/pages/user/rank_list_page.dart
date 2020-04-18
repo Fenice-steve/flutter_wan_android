@@ -54,6 +54,7 @@ class CoinRankListPage extends StatelessWidget {
           ),
           onPressed: () {
             NavigatorUtils.goBack(context);
+//          Navigator.of(context).pop();
           },
         ),
       ),

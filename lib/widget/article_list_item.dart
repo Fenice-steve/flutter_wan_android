@@ -37,9 +37,10 @@ class ArticleItemWidget extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
               margin: const EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom: Divider.createBorderSide(context, width: 0.7))),
+//              // 下滑线
+//              decoration: BoxDecoration(
+//                  border: Border(
+//                      bottom: Divider.createBorderSide(context, width: 0.7))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,

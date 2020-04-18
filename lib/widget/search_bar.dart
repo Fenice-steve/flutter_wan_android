@@ -99,7 +99,7 @@ class _SearchBarState extends State<SearchBar> {
   Widget get _inputBox {
     Color inputBoxColor;
     if (widget.searchBarType == SearchBarType.home) {
-      inputBoxColor = Colors.white.withOpacity(0.7);
+      inputBoxColor = Colors.white.withOpacity(0.5);
     } else {
       inputBoxColor = Color(int.parse('0xffEDEDED'));
     }
