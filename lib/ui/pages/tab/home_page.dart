@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wanandroidflutter/model/article.dart';
 import 'package:wanandroidflutter/provider/provider_widget.dart';
+import 'package:wanandroidflutter/utils/status_bar_utils.dart';
 import 'package:wanandroidflutter/view_model/home_model.dart';
 import 'package:wanandroidflutter/view_model/scroll_controller_model.dart';
 import 'package:wanandroidflutter/widget/animated_provider.dart';
@@ -55,114 +57,119 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     var bannerHeight = MediaQuery.of(context).size.width * 5 / 11;
 
-    return ProviderWidget2<HomeModel, TapToTopModel>(
-      model1: HomeModel(),
-      // 使用PrimaryScrollController保留iOS点击状态栏回到顶部的功能
-      model2: TapToTopModel(PrimaryScrollController.of(context),
-          height: bannerHeight - kToolbarHeight),
-      onModelReady: (homeModel, tapToTopModel) {
-        homeModel.initData();
-        tapToTopModel.init();
-      },
-      builder: (context, homeModel, tapToTopModel, child) {
-        return Scaffold(
-          body: Stack(
-            children: <Widget>[
-              // 移除顶部的Padding边距
-              MediaQuery.removePadding(
-                  context: context,
-                  removeTop: false,
-                  child: Builder(builder: (_) {
-                    if (homeModel.isError && homeModel.list.isEmpty) {
-                      return Container(
-                        child: Text('无数据'),
-                      );
-                    }
-                    return RefreshConfiguration.copyAncestor(
-                        context: context,
-                        // 下拉触发二楼距离
-                        twiceTriggerDistance: kHomeRefreshHeight - 15,
-                        //最大下拉距离,android默认为0,这里为了触发二楼
-                        maxOverScrollExtent: kHomeRefreshHeight,
-                        headerTriggerDistance:
-                            80 + MediaQuery.of(context).padding.top / 3,
-                        child: NotificationListener(
-                          onNotification: (scrollNotification) {
-                            // 判断是否是监听更新的对象
-                            if (scrollNotification
-                                    is ScrollUpdateNotification &&
-                                // 从外层Widget开始向下遍历查找
-                                scrollNotification.depth == 0) {
-                              // 滚动且是列表滚动的时候
-                              _onScroll(scrollNotification.metrics.pixels);
-                            }
-                            return false;
-                          },
-                          child: SmartRefresher(
-                            controller: homeModel.refreshController,
-                            header: WaterDropHeader(),
-                            footer: ClassicFooter(),
-                            enablePullDown: homeModel.list.isNotEmpty,
-                            onRefresh: () async {
-                              await homeModel.refresh();
-                              homeModel.showErrorMessage(context);
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: StatusBarUtils.systemUiOverlayStyle(context),
+      child: ProviderWidget2<HomeModel, TapToTopModel>(
+        model1: HomeModel(),
+        // 使用PrimaryScrollController保留iOS点击状态栏回到顶部的功能
+        model2: TapToTopModel(PrimaryScrollController.of(context),
+            height: bannerHeight - kToolbarHeight),
+        onModelReady: (homeModel, tapToTopModel) {
+          homeModel.initData();
+          tapToTopModel.init();
+        },
+        builder: (context, homeModel, tapToTopModel, child) {
+          return Scaffold(
+            body: Stack(
+              children: <Widget>[
+                // 移除顶部的Padding边距
+                MediaQuery.removePadding(
+                    context: context,
+                    removeTop: false,
+                    child: Builder(builder: (_) {
+                      if (homeModel.isError && homeModel.list.isEmpty) {
+                        return Container(
+                          child: Text('无数据'),
+                        );
+                      }
+                      return RefreshConfiguration.copyAncestor(
+                          context: context,
+                          // 下拉触发二楼距离
+                          twiceTriggerDistance: kHomeRefreshHeight - 15,
+                          //最大下拉距离,android默认为0,这里为了触发二楼
+                          maxOverScrollExtent: kHomeRefreshHeight,
+                          headerTriggerDistance:
+                              80 + MediaQuery.of(context).padding.top / 3,
+                          child: NotificationListener(
+                            onNotification: (scrollNotification) {
+                              // 判断是否是监听更新的对象
+                              if (scrollNotification
+                                      is ScrollUpdateNotification &&
+                                  // 从外层Widget开始向下遍历查找
+                                  scrollNotification.depth == 0) {
+                                // 滚动且是列表滚动的时候
+                                _onScroll(scrollNotification.metrics.pixels);
+                              }
+                              return false;
                             },
-                            onLoading: homeModel.loadMore,
-                            enablePullUp: homeModel.list.isNotEmpty,
-                            child: CustomScrollView(
-                              controller: tapToTopModel.scrollController,
-                              slivers: <Widget>[
-                                SliverToBoxAdapter(),
-                                SliverAppBar(
-                                  expandedHeight: bannerHeight,
-                                  flexibleSpace: Banner(),
-                                  pinned: true,
-                                ),
+                            child: SmartRefresher(
+                              controller: homeModel.refreshController,
+                              header: WaterDropHeader(),
+                              footer: ClassicFooter(),
+                              enablePullDown: homeModel.list.isNotEmpty,
+                              onRefresh: () async {
+                                await homeModel.refresh();
+                                homeModel.showErrorMessage(context);
+                              },
+                              onLoading: homeModel.loadMore,
+                              enablePullUp: homeModel.list.isNotEmpty,
+                              child: CustomScrollView(
+                                controller: tapToTopModel.scrollController,
+                                slivers: <Widget>[
+                                  SliverToBoxAdapter(),
+                                  SliverAppBar(
+                                    expandedHeight: bannerHeight,
+                                    flexibleSpace: Banner(),
+                                    pinned: true,
+                                  ),
 
-                                // 如果不是Sliver家族的Widget，需要用SliverToBoxAdapter做包裹
-                                if (homeModel.isEmpty)
-                                  SliverToBoxAdapter(
-                                      child: Padding(
-                                    padding: const EdgeInsets.only(top: 50),
-                                    child: Container(),
-                                  )),
-                                if (homeModel.topArticles?.isNotEmpty ?? false)
-                                  HomeTopArticleList(),
-                                HomeArticleList()
-                              ],
+                                  // 如果不是Sliver家族的Widget，需要用SliverToBoxAdapter做包裹
+                                  if (homeModel.isEmpty)
+                                    SliverToBoxAdapter(
+                                        child: Padding(
+                                      padding: const EdgeInsets.only(top: 50),
+                                      child: Container(),
+                                    )),
+                                  if (homeModel.topArticles?.isNotEmpty ??
+                                      false)
+                                    HomeTopArticleList(),
+                                  HomeArticleList()
+                                ],
+                              ),
                             ),
-                          ),
-                        ));
-                  })),
+                          ));
+                    })),
 
-              _appBar
-            ],
-          ),
-          floatingActionButton: ScaleAnimatedSwitcher(
-              child: tapToTopModel.showTopButton &&
-                      homeModel.refreshController.headerStatus !=
-                          RefreshStatus.twoLevelOpening
-                  ? FloatingActionButton(
-                      heroTag: 'homeEmpty',
-                      key: ValueKey(Icons.vertical_align_top),
-                      onPressed: () {
-                        tapToTopModel.scrollToTop();
-                      },
-                      child: Icon(Icons.vertical_align_top),
-                    )
-                  : FloatingActionButton(
-                      heroTag: 'homeFab',
-                      key: ValueKey(Icons.search),
-                      onPressed: () {
+                _appBar
+              ],
+            ),
+            floatingActionButton: ScaleAnimatedSwitcher(
+                child: tapToTopModel.showTopButton &&
+                        homeModel.refreshController.headerStatus !=
+                            RefreshStatus.twoLevelOpening
+                    ? FloatingActionButton(
+                        heroTag: 'homeEmpty',
+                        key: ValueKey(Icons.vertical_align_top),
+                        onPressed: () {
+                          tapToTopModel.scrollToTop();
+                        },
+                        child: Icon(Icons.vertical_align_top),
+                      )
+                    : FloatingActionButton(
+                        heroTag: 'homeFab',
+                        key: ValueKey(Icons.search),
+                        onPressed: () {
 //                showSearch(
 //                    context: context, delegate: DefaultSearchDelegate());
-                      },
-                      child: Icon(
-                        Icons.search,
-                      ),
-                    )),
-        );
-      },
+                        },
+                        child: Icon(
+                          Icons.search,
+                        ),
+                      )),
+          );
+        },
+      ),
     );
   }
 
