@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wanandroidflutter/ui/pages/tab/home_page.dart';
 import 'package:wanandroidflutter/ui/pages/tab/user_page.dart';
+import 'package:wanandroidflutter/ui/pages/tab/wechat_account_page.dart';
 
 /// 底部导航栏
 class TabNavigator extends StatefulWidget {
@@ -10,7 +11,7 @@ class TabNavigator extends StatefulWidget {
   _TabNavigatorState createState() => _TabNavigatorState();
 }
 
-List<Widget> pages = <Widget>[HomePage(),UserPage()];
+List<Widget> pages = <Widget>[HomePage(),WechatAccountPage(),UserPage()];
 
 class _TabNavigatorState extends State<TabNavigator> {
   var _pageController = PageController();
@@ -55,6 +56,14 @@ class _TabNavigatorState extends State<TabNavigator> {
               activeIcon: Icon(
                 Icons.vertical_align_top,
                 size: 32,
+              )),
+
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              title: Text('公众号'),
+              activeIcon: Icon(
+                Icons.person,
+//                size: 32,
               )),
           BottomNavigationBarItem(
               icon: Icon(Icons.person),
