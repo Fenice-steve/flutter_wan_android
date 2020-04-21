@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wanandroidflutter/model/article.dart';
-import 'package:wanandroidflutter/model/wechat_tree.dart';
+import 'package:wanandroidflutter/model/tree.dart';
 import 'package:wanandroidflutter/provider/provider_widget.dart';
 import 'package:wanandroidflutter/provider/view_state_widget.dart';
 import 'package:wanandroidflutter/utils/status_bar_utils.dart';
@@ -27,6 +27,13 @@ class _WechatAccountPageState extends State<WechatAccountPage>
   TabController tabController;
 
   @override
+  void dispose() {
+    valueNotifier.dispose();
+    super.dispose();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return AnnotatedRegion(
       value: StatusBarUtils.systemUiOverlayStyle(context),
@@ -42,7 +49,8 @@ class _WechatAccountPageState extends State<WechatAccountPage>
             return ViewStateErrorWidget(
                 error: model.viewStateError, onPressed: model.initData);
           }
-          List<WechatTree> treeList = model.list;
+//          List<WechatTree> treeList = model.list;
+          List<Tree> treeList = model.list;
 
           var primaryColor = Theme.of(context).primaryColor;
 
@@ -59,7 +67,6 @@ class _WechatAccountPageState extends State<WechatAccountPage>
                     });
                   }
                   return Scaffold(
-                    // 待续
                     appBar: AppBar(
                       title: Stack(
                         children: <Widget>[
@@ -113,8 +120,8 @@ class _WechatAccountArticleListState extends State<WechatAccountArticleList>
 
   @override
   Widget build(BuildContext context) {
-    return ProviderWidget<WechatAccountArticleListModel>(
-      model: WechatAccountArticleListModel(widget.id),
+    return ProviderWidget<WechatArticleListModel>(
+      model: WechatArticleListModel(widget.id),
       onModelReady: (model) => model.initData(),
       builder: (context, model, child) {
         if (model.isBusy) {

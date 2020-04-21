@@ -1,5 +1,6 @@
 import 'package:wanandroidflutter/config/net/wan_android_api.dart';
 import 'package:wanandroidflutter/model/article.dart';
+import 'package:wanandroidflutter/model/tree.dart';
 import 'package:wanandroidflutter/model/user.dart';
 import 'package:wanandroidflutter/model/banner.dart';
 import 'package:wanandroidflutter/model/wechat_tree.dart';
@@ -64,19 +65,32 @@ class WanAndroidRepository {
         .toList();
   }
 
-  /// 公众号分类
+//  /// 公众号分类
+//  static Future fetchWechatAccounts() async {
+//    var response = await http.get('wxarticle/chapters/json');
+//    return response.data.map<WechatTree>((item) => WechatTree.fromJsonMap(item)).toList;
+//  }
+
+  // 公众号分类
   static Future fetchWechatAccounts() async {
     var response = await http.get('wxarticle/chapters/json');
-    return response.data
-        .map<WechatTree>((item) => WechatTree.fromJsonMap(item))
-        .toList;
+    return response.data.map<Tree>((item) => Tree.fromJsonMap(item)).toList();
   }
 
-  /// 公众号文章
+
+//  /// 公众号文章
+//  static Future fetchWechatAccountArticles(int pageNum, int id) async {
+//    var response = await http.get('wxarticle/list/$id/$pageNum/json');
+//    return response.data['datas']
+//        .map<Article>((item) => Article.fromMap(item))
+//        .toList;
+//  }
+
+  // 公众号文章
   static Future fetchWechatAccountArticles(int pageNum, int id) async {
     var response = await http.get('wxarticle/list/$id/$pageNum/json');
     return response.data['datas']
         .map<Article>((item) => Article.fromJsonMap(item))
-        .toList;
+        .toList();
   }
-}
+  }
