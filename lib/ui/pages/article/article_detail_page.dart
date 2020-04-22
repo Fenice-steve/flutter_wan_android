@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:share/share.dart';
 import 'package:wanandroidflutter/model/article.dart';
+import 'package:wanandroidflutter/provider/provider_widget.dart';
 import 'package:wanandroidflutter/utils/string_utils.dart';
 import 'package:wanandroidflutter/widget/app_bar.dart';
 import 'package:wanandroidflutter/widget/third_app_utils.dart';
@@ -58,30 +59,78 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
             navigationDelegate: (NavigationRequest request) {
               /// TODO isForMainFrame为false，页面不跳转，导致网页内很多链接点击没效果
               debugPrint('导航$request');
-              if(!request.url.startsWith('http')){
+              if (!request.url.startsWith('http')) {
                 ThirdAppUtils.openAppByUrl(request.url);
                 return NavigationDecision.prevent;
-              }else{
+              } else {
                 return NavigationDecision.navigate;
               }
             },
-            onWebViewCreated: (WebViewController controller){
+            onWebViewCreated: (WebViewController controller) {
               _webViewController = controller;
-              _webViewController.currentUrl().then((url){
+              _webViewController.currentUrl().then((url) {
                 debugPrint('返回当前$url');
               });
             },
-            onPageFinished: (String value) async{
+            onPageFinished: (String value) async {
               debugPrint('加载完成: $value');
-              if(!_finishedCompleter.isCompleted){
+              if (!_finishedCompleter.isCompleted) {
                 _finishedCompleter.complete(true);
               }
               refreshNavigator();
             },
           )),
+
       /// 待续
       bottomNavigationBar: BottomAppBar(
+        child: IconTheme(
+            data: Theme.of(context).iconTheme.copyWith(opacity: 0.7),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                ValueListenableBuilder(
+                    valueListenable: canGoBack,
+                    builder: (context, value, child) => IconButton(
+                        icon: Icon(Icons.arrow_back_ios),
+                        onPressed: !value
+                            ? null
+                            : () {
+                                _webViewController.goBack();
+                                refreshNavigator();
+                              })),
+                ValueListenableBuilder(
+                    valueListenable: canGoForward,
+                    builder: (context, value, child) => IconButton(
+                        icon: Icon(Icons.arrow_forward_ios),
+                        onPressed: !value
+                            ? null
+                            : () {
+                                _webViewController.goForward();
+                                refreshNavigator();
+                              })),
+                IconButton(
+                    tooltip: '刷新',
+                    icon: const Icon(Icons.autorenew),
+                    onPressed: () {
+                      _webViewController.reload();
+                    }),
 
+              ],
+            )),
+      ),
+      floatingActionButton: FutureBuilder<String>(
+          future: canOpenAppFuture,
+          builder: (context, snapshot){
+            if (snapshot.hasData) {
+              return FloatingActionButton(
+                onPressed: () {
+                  ThirdAppUtils.openAppByUrl(snapshot.data);
+                },
+                child: Icon(Icons.open_in_new),
+              );
+            }
+            return SizedBox.shrink();
+          },
 
       ),
     );
@@ -93,15 +142,15 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
   /// 但是目前该方法没有合适的调用时机.
   /// 在[onPageFinished]中,会遗漏正在加载中的状态
   /// 在[navigationDelegate]中,会存在页面还没有加载就已经判断过了.
-  void refreshNavigator(){
+  void refreshNavigator() {
     /// 是否可以后退
-    _webViewController.canGoBack().then((value){
+    _webViewController.canGoBack().then((value) {
       debugPrint('canGoBack--->$value');
       return canGoBack.value = value;
     });
 
     /// 是否可以前进
-    _webViewController.canGoForward().then((value){
+    _webViewController.canGoForward().then((value) {
       debugPrint('canGoForward--->$value');
       return canGoForward.value = value;
     });

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wanandroidflutter/model/article.dart';
 import 'package:wanandroidflutter/provider/provider_widget.dart';
+import 'package:wanandroidflutter/routers/router_manger.dart';
 import 'package:wanandroidflutter/utils/status_bar_utils.dart';
 import 'package:wanandroidflutter/view_model/home_model.dart';
 import 'package:wanandroidflutter/view_model/scroll_controller_model.dart';
@@ -14,6 +15,7 @@ import 'package:wanandroidflutter/widget/animated_provider.dart';
 import 'package:wanandroidflutter/widget/article_list_item.dart';
 import 'package:wanandroidflutter/widget/banner_image.dart';
 import 'package:wanandroidflutter/widget/search_bar.dart';
+import 'package:wanandroidflutter/model/article.dart';
 
 // 滚动最大距离
 const APPBAR_SCROLL_OFFSET = 100;
@@ -35,7 +37,7 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
 
-  String city = '西安';
+  String city = '广场';
 
   _onScroll(offset) {
     // 滚动距离除以最大滚动距离
@@ -56,7 +58,6 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     var bannerHeight = MediaQuery.of(context).size.width * 5 / 11;
-
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: StatusBarUtils.systemUiOverlayStyle(context),
@@ -236,7 +237,15 @@ class Banner extends StatelessWidget {
             autoplayDelay: 5000,
             itemBuilder: (context, index) {
               return InkWell(
-                onTap: () {},
+                onTap: () {
+                  var banner = banners[index];
+                  Navigator.of(context).pushNamed(RouteName.articleDetail,
+                      arguments: Article()
+                        ..id = banner.id
+                        ..title = banner.title
+                        ..link = banner.url
+                        ..collect = false);
+                },
                 child: BannerImage(banners[index].imagePath),
               );
             },

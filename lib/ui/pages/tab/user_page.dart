@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:wanandroidflutter/routers/fluro_navigator.dart';
+import 'package:wanandroidflutter/routers/router_manger.dart';
 import 'package:wanandroidflutter/ui/pages/user/user_router.dart';
 import 'package:wanandroidflutter/view_model/user_model.dart';
 
@@ -28,7 +29,8 @@ class _UserPageState extends State<UserPage>
               GestureDetector(
                       child: Icon(Icons.equalizer),
                       onTap: () {
-                        NavigatorUtils.push(context, UserRouter.rankListPage);
+//                        NavigatorUtils.push(context, UserRouter.rankListPage);
+                      Navigator.pushNamed(context, RouteName.rank);
                       }),
               SizedBox(
                 width: ScreenUtil().setWidth(30),
@@ -52,8 +54,7 @@ class UserHeaderWidget extends StatelessWidget {
               onTap: model.hasUser
                   ? null
                   : () {
-                      NavigatorUtils.push(context, UserRouter.loginPage);
-                    },
+                Navigator.pushNamed(context, RouteName.login);                    },
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(top: 60),

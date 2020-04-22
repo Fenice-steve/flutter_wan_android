@@ -7,7 +7,8 @@ import 'package:wanandroidflutter/config/provider_manager.dart';
 import 'package:wanandroidflutter/config/storage_manager.dart';
 import 'package:wanandroidflutter/routers/routes.dart';
 import 'package:wanandroidflutter/ui/pages/tab/tab_navigator.dart';
-import 'package:fluro/fluro.dart';
+import 'package:wanandroidflutter/routers/router_manger.dart';
+//import 'package:fluro/fluro.dart';
 import 'routers/application.dart';
 
 main() async {
@@ -26,12 +27,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // 创建一个Router对象
-    final router = Router();
-    // 配置Routes注册管理
-    Routes.configureRoutes(router);
-    // 将生成的router给全局化
-    Application.router = router;
+//    // 创建一个Router对象
+//    final router = Router();
+//    // 配置Routes注册管理
+//    Routes.configureRoutes(router);
+//    // 将生成的router给全局化
+//    Application.router = router;
 
     return OKToast(
         child: MultiProvider(
@@ -42,7 +43,8 @@ class MyApp extends StatelessWidget {
         child:
         MaterialApp(
           debugShowCheckedModeBanner: false,
-          onGenerateRoute: Application.router.generator,
+//          onGenerateRoute: Application.router.generator,
+          onGenerateRoute: Router.generateRoute,
           home: TabNavigator(),
         ),
       ),

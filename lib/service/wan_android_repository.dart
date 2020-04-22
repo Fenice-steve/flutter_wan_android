@@ -51,7 +51,7 @@ class WanAndroidRepository {
     var response = await http.get('article/top/json');
 //    return Article.fromJsonMap(response.data);
     return response.data
-        .map<Article>((item) => Article.fromJsonMap(item))
+        .map<Article>((item) => Article.fromMap(item))
         .toList();
   }
 
@@ -61,7 +61,7 @@ class WanAndroidRepository {
     var response = await http.get('article/list/$pageNum/json',
         queryParameters: (cid != null ? {'cid': cid} : null));
     return response.data['datas']
-        .map<Article>((item) => Article.fromJsonMap(item))
+        .map<Article>((item) => Article.fromMap(item))
         .toList();
   }
 
@@ -90,7 +90,7 @@ class WanAndroidRepository {
   static Future fetchWechatAccountArticles(int pageNum, int id) async {
     var response = await http.get('wxarticle/list/$id/$pageNum/json');
     return response.data['datas']
-        .map<Article>((item) => Article.fromJsonMap(item))
+        .map<Article>((item) => Article.fromMap(item))
         .toList();
   }
   }

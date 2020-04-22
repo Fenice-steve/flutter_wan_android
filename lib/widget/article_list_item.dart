@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:quiver/strings.dart';
 import 'package:wanandroidflutter/model/article.dart';
+import 'package:wanandroidflutter/routers/router_manger.dart';
 import 'package:wanandroidflutter/widget/image.dart';
 
 /// 文章列表子Widget
@@ -33,6 +34,8 @@ class ArticleItemWidget extends StatelessWidget {
           child: InkWell(
             onTap: () {
               // 文章详情跳转
+              Navigator.of(context)
+                  .pushNamed(RouteName.articleDetail, arguments: article);
             },
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),

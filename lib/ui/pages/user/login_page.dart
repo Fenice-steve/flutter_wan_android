@@ -6,6 +6,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:wanandroidflutter/provider/provider_widget.dart';
 import 'package:wanandroidflutter/routers/fluro_navigator.dart';
+import 'package:wanandroidflutter/routers/router_manger.dart';
 import 'package:wanandroidflutter/ui/pages/user/user_router.dart';
 import 'package:wanandroidflutter/view_model/login_model.dart';
 import 'package:wanandroidflutter/widget/diy_textfield.dart';
@@ -49,7 +50,8 @@ class _LoginPageState extends State<LoginPage> {
             color: Theme.of(context).cardColor,
           ),
           onPressed: () {
-            NavigatorUtils.goBack(context);
+//            NavigatorUtils.goBack(context);
+          Navigator.pop(context);
           },
         ),
         actions: <Widget>[
@@ -248,7 +250,8 @@ class _SingUpWidgetState extends State<SingUpWidget> {
       ..onTap = () async {
         // 将注册成功的用户名,回填如登录框
         widget.nameController.text =
-            await NavigatorUtils.push(context, UserRouter.registerPage);
+//            await NavigatorUtils.push(context, UserRouter.registerPage);
+            await Navigator.pushNamed(context, RouteName.register);
       };
     super.initState();
   }

@@ -62,7 +62,7 @@ class _TabNavigatorState extends State<TabNavigator> {
               icon: Icon(Icons.person),
               title: Text('公众号'),
               activeIcon: Icon(
-                Icons.person,
+                Icons.group_work,
 //                size: 32,
               )),
           BottomNavigationBarItem(
